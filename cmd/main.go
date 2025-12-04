@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gorestart-minecraft/internal/config"
-	"gorestart-minecraft/internal/scheduler"
+	"go-mc-scheduler/internal/config"
+	"go-mc-scheduler/internal/scheduler"
 	"os"
 
 	"github.com/rs/zerolog"

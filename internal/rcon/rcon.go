@@ -1,7 +1,7 @@
 package rcon
 
 import (
-	"gorestart-minecraft/internal/config"
+	"go-mc-scheduler/internal/config"
 
 	"github.com/gorcon/rcon"
 	"github.com/rs/zerolog/log"

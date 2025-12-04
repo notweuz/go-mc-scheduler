@@ -1,8 +1,8 @@
 package scheduler
 
 import (
-	"gorestart-minecraft/internal/config"
-	"gorestart-minecraft/internal/rcon"
+	"go-mc-scheduler/internal/config"
+	"go-mc-scheduler/internal/rcon"
 	"time"
 
 	"github.com/robfig/cron/v3"
