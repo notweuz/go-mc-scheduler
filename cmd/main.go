@@ -15,7 +15,7 @@ var Version = "25.12.1"
 
 func main() {
 	setupLogger()
-	log.Info().Msg("Starting go-mc-restart service")
+	log.Info().Str("version", Version).Msg("Starting go-mc-restart service")
 
 	err := config.LoadConfig("configs/application.yml")
 	if err != nil {
