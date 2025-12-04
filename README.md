@@ -7,7 +7,6 @@ A simple task scheduler for Minecraft servers using RCON.
 - Schedule tasks with cron syntax
 - Execute server commands via RCON
 - Multi-step jobs with delays
-- Automatic server restarts with player warnings
 
 ## Quick Start
 
