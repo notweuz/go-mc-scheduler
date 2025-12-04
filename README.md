@@ -6,3 +6,8 @@ RCON & cron based Minecraft server auto-restart tool written in Go.
 - Sends warning messages to players before restarting.
 - Gracefully stops the server to prevent data loss.
 - Configurable settings via a yaml file.
+
+## Future Plans
+- [ ] Complete rewrite project and rename it to go-mc-scheduler.
+- [ ] Add more scheduling options (e.g., daily, weekly restarts).
+- [ ] Add custom schedule tasks
