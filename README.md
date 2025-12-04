@@ -1,5 +1,5 @@
 # go-mc-restart
-RCON & cron based Minecraft server auto-restart tool written in Go.
+RCON & cron based Minecraft server scheduling tool written in Go.
 
 ## Features
 - Automatically restarts Minecraft server at specified intervals.
