@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 )
 
-var Version = "25.12.1"
+var Version = "2025.12.1"
 
 func main() {
 	setupLogger()
