@@ -3,6 +3,7 @@ package main
 import (
 	"gorestart-minecraft/internal/config"
 	"gorestart-minecraft/internal/rcon"
+	"gorestart-minecraft/internal/scheduler"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -18,11 +19,18 @@ func main() {
 
 	err := config.LoadConfig("configs/application.yml")
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to load application configuration")
+		log.Fatal().Err(err).Msg("Failed to load config")
 	}
 
-	rcon.SetupRCONClient(&config.Instance.RconConfig)
-	rcon.Client.Connect()
+	rcon.SetupRCONClient(&config.GetConfig().Rcon)
+
+	sched := scheduler.NewScheduler(&config.GetConfig().Scheduler)
+	if err := sched.Start(); err != nil {
+		log.Fatal().Err(err).Msg("Failed to start scheduler")
+	}
+	defer sched.Stop()
+
+	select {}
 }
 
 func setupLogger() {

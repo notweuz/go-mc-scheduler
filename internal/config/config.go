@@ -8,7 +8,12 @@ import (
 )
 
 type Config struct {
-	RconConfig RconConfig `yaml:"go_mc_restart"`
+	GlobalConfig CommonConfig `yaml:"go_mc_restart"`
+}
+
+type CommonConfig struct {
+	Scheduler Scheduler  `yaml:"scheduler"`
+	Rcon      RconConfig `yaml:"rcon"`
 }
 
 type RconConfig struct {
@@ -17,6 +22,8 @@ type RconConfig struct {
 }
 
 type Scheduler struct {
+	Cron     string `yaml:"cron"`
+	Timezone string `yaml:"timezone"`
 }
 
 var Instance *Config
@@ -37,4 +44,8 @@ func LoadConfig(path string) error {
 	log.Info().Msg("Parsed application configuration")
 
 	return nil
+}
+
+func GetConfig() *CommonConfig {
+	return &Instance.GlobalConfig
 }
