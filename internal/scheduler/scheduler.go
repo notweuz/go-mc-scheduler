@@ -52,9 +52,9 @@ func (s *Scheduler) restartServer() {
 		return
 	}
 
-	for _, w := range RestartWarnings {
-		for _, err := rcon.Client.Execute("say " + w.message); err != nil; {
-			log.Error().Err(err).Str("message", w.message).Msg("Failed to send restart warning")
+	for _, w := range RestartSequence {
+		for _, err := rcon.Client.Execute(w.message); err != nil; {
+			log.Error().Err(err).Str("message", w.message).Msg("Failed run restart sequence entry")
 		}
 		time.Sleep(w.delay)
 	}
