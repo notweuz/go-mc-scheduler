@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	GlobalConfig CommonConfig `yaml:"go_mc_restart"`
+	GlobalConfig CommonConfig `yaml:"go_mc_scheduler"`
 }
 
 type CommonConfig struct {
@@ -22,8 +22,19 @@ type RconConfig struct {
 }
 
 type Scheduler struct {
-	Cron     string `yaml:"cron"`
 	Timezone string `yaml:"timezone"`
+	Jobs     []Job  `yaml:"jobs,omitempty"`
+}
+
+type Job struct {
+	Name  string `yaml:"name"`
+	Cron  string `yaml:"cron"`
+	Steps []Step `yaml:"steps,omitempty"`
+}
+
+type Step struct {
+	Execute *string `yaml:"execute,omitempty"`
+	Wait    *string `yaml:"wait,omitempty"`
 }
 
 var Instance *Config

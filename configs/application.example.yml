@@ -1,7 +1,36 @@
-go_mc_restart:
+go_mc_scheduler:
   rcon:
     address: "localhost:25575"
     password: "password"
   scheduler:
-    cron: "0 0 * * *"
     timezone: "Europe/Moscow"
+
+    jobs:
+      - name: "Auto Restart"
+        cron: "0 0 * * *"
+        steps:
+          - execute: "say §cServer will restart in 10 minutes!"
+          - wait: "5m"
+          - execute: "say §cServer will restart in 5 minutes!"
+          - wait: "4m"
+          - execute: "say §cServer will restart in 1 minute!"
+          - wait: "30s"
+          - execute: "say §cServer will restart in 30 seconds!"
+          - wait: "20s"
+          - execute: "say §cServer will restart in 10 seconds!"
+          - wait: "5s"
+          - execute: "say §cServer is restarting in 5 seconds!"
+          - wait: "1s"
+          - execute: "say §cServer is restarting in 4 seconds!"
+          - wait: "1s"
+          - execute: "say §cServer is restarting in 3 seconds!"
+          - wait: "1s"
+          - execute: "say §cServer is restarting in 2 seconds!"
+          - wait: "1s"
+          - execute: "say §cServer is restarting in 1 second!"
+          - wait: "1s"
+          - execute: "say §cServer is restarting!"
+          - wait: "3s"
+          - execute: "save-all"
+          - execute: "kick @a §cServer is restarting, please reconnect in a few moments."
+          - execute: "stop"
