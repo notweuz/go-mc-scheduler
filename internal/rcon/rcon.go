@@ -2,6 +2,7 @@ package rcon
 
 import (
 	"go-mc-scheduler/internal/config"
+	"time"
 
 	"github.com/gorcon/rcon"
 	"github.com/rs/zerolog/log"
@@ -17,7 +18,11 @@ func NewConnection(connection *rcon.Conn) *Connection {
 
 func Connect() (*Connection, error) {
 	log.Info().Str("address", config.GetConfig().Rcon.Address).Msg("Connecting to RCON server")
-	conn, err := rcon.Dial(config.GetConfig().Rcon.Address, config.GetConfig().Rcon.Password)
+	conn, err := rcon.Dial(
+		config.GetConfig().Rcon.Address,
+		config.GetConfig().Rcon.Password,
+		rcon.SetDialTimeout(10*time.Second),
+	)
 	return NewConnection(conn), err
 }
 
