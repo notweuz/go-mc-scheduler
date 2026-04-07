@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"go-mc-scheduler/internal/config"
 	"go-mc-scheduler/internal/scheduler"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -25,9 +28,15 @@ func main() {
 	if err := sched.Start(); err != nil {
 		log.Fatal().Err(err).Msg("Failed to start scheduler")
 	}
-	defer sched.Stop()
 
-	select {}
+	shutdownCtx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer cancel()
+
+	select {
+	case <-shutdownCtx.Done():
+		log.Info().Msg("Shutting down scheduler")
+		sched.Stop()
+	}
 }
 
 func setupLogger() {
