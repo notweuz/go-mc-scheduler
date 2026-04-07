@@ -17,6 +17,7 @@ type Scheduler struct {
 	wg     sync.WaitGroup
 	jobs   []config.Job
 	done   chan struct{}
+	stop   chan struct{}
 }
 
 func NewScheduler(cfg *config.Scheduler) *Scheduler {
@@ -29,6 +30,7 @@ func NewScheduler(cfg *config.Scheduler) *Scheduler {
 	return &Scheduler{
 		cron:   cron.New(cron.WithLocation(location)),
 		done:   make(chan struct{}),
+		stop:   make(chan struct{}),
 		config: cfg,
 	}
 }
@@ -62,6 +64,8 @@ func (s *Scheduler) Stop() {
 	shutdownContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
+	s.stop <- struct{}{}
+
 	go func() {
 		s.wg.Wait()
 		s.done <- struct{}{}
@@ -84,14 +88,20 @@ func (s *Scheduler) runJob(job config.Job) func() {
 
 		var conn *rcon.Connection
 		for i := 0; i < 5; i++ {
-			connection, err := rcon.Connect()
-			if err != nil {
-				log.Warn().Err(err).Msg("Failed to connect to RCON server, retrying...")
-				time.Sleep(3 * time.Second)
-				continue
+			select {
+			case <-s.stop:
+				log.Info().Msg("Aborting connection, scheduler stopping gracefully")
+				return
+			default:
+				connection, err := rcon.Connect()
+				if err != nil {
+					log.Warn().Err(err).Msg("Failed to connect to RCON server, retrying...")
+					time.Sleep(3 * time.Second)
+					continue
+				}
+				conn = connection
+				break
 			}
-			conn = connection
-			break
 		}
 
 		if conn == nil {
@@ -109,7 +119,7 @@ func (s *Scheduler) runJob(job config.Job) func() {
 
 		for _, w := range job.Steps {
 			select {
-			case <-s.done:
+			case <-s.stop:
 				log.Info().Str("job", job.Name).Msg("Aborting job, scheduler is shutting down")
 				return
 			default:
