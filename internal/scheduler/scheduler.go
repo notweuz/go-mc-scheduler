@@ -52,6 +52,7 @@ func (s *Scheduler) Stop() {
 	shutdownContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
+	s.done = make(chan struct{})
 	go func() {
 		s.wg.Wait()
 		s.done <- struct{}{}
