@@ -1,8 +1,10 @@
 package scheduler
 
 import (
+	"context"
 	"go-mc-scheduler/internal/config"
 	"go-mc-scheduler/internal/rcon"
+	"sync"
 	"time"
 
 	"github.com/robfig/cron/v3"
@@ -12,6 +14,9 @@ import (
 type Scheduler struct {
 	cron   *cron.Cron
 	config *config.Scheduler
+	wg     sync.WaitGroup
+	jobs   []config.Job
+	done   chan struct{}
 }
 
 func NewScheduler(cfg *config.Scheduler) *Scheduler {
@@ -43,7 +48,21 @@ func (s *Scheduler) Start() error {
 
 func (s *Scheduler) Stop() {
 	s.cron.Stop()
-	log.Info().Msg("Scheduler stopped")
+
+	shutdownContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	go func() {
+		s.wg.Wait()
+		s.done <- struct{}{}
+	}()
+
+	select {
+	case <-s.done:
+		log.Info().Msg("Scheduler stopped gracefully")
+	case <-shutdownContext.Done():
+		log.Info().Msg("Scheduler shutdown timeout")
+	}
 }
 
 func (s *Scheduler) runJob(job config.Job) func() {
