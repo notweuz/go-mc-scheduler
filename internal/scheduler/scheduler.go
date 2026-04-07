@@ -28,11 +28,14 @@ func NewScheduler(cfg *config.Scheduler) *Scheduler {
 
 	return &Scheduler{
 		cron:   cron.New(cron.WithLocation(location)),
+		done:   make(chan struct{}),
 		config: cfg,
 	}
 }
 
 func (s *Scheduler) Start() error {
+	log.Info().Str("timezone", s.config.Timezone).Msg("Starting scheduler with timezone")
+
 	for _, job := range s.config.Jobs {
 		_, err := s.cron.AddFunc(job.Cron, s.runJob(job))
 		if err != nil {
@@ -43,6 +46,13 @@ func (s *Scheduler) Start() error {
 
 	s.cron.Start()
 	log.Info().Msg("Imported all scheduled jobs and started scheduler")
+
+	entries := s.cron.Entries()
+	for _, entry := range entries {
+		nextRun := entry.Next.Format(time.RFC3339)
+		log.Info().Str("next_run", nextRun).Msg("Next scheduled run")
+	}
+
 	return nil
 }
 
@@ -52,7 +62,6 @@ func (s *Scheduler) Stop() {
 	shutdownContext, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	s.done = make(chan struct{})
 	go func() {
 		s.wg.Wait()
 		s.done <- struct{}{}
@@ -68,7 +77,8 @@ func (s *Scheduler) Stop() {
 
 func (s *Scheduler) runJob(job config.Job) func() {
 	return func() {
-		log.Info().Str("job", job.Name).Msg("Scheduled job triggered")
+		s.wg.Add(1)
+		defer s.wg.Done()
 
 		log.Info().Str("job", job.Name).Msg("Connecting to server using RCON")
 		conn, err := rcon.Connect()
@@ -84,20 +94,26 @@ func (s *Scheduler) runJob(job config.Job) func() {
 		}()
 
 		for _, w := range job.Steps {
-			if w.Execute != nil {
-				_, err := conn.Execute(*w.Execute)
-				if err != nil {
-					log.Error().Err(err).Str("command", *w.Execute).Msg("Failed to execute command, skipping to next step")
+			select {
+			case <-s.done:
+				log.Info().Str("job", job.Name).Msg("Aborting job, scheduler is shutting down")
+				return
+			default:
+				if w.Execute != nil {
+					_, err := conn.Execute(*w.Execute)
+					if err != nil {
+						log.Error().Err(err).Str("command", *w.Execute).Msg("Failed to execute command, skipping to next step")
+					}
 				}
-			}
-			if w.Wait != nil {
-				duration, err := time.ParseDuration(*w.Wait)
-				if err != nil {
-					log.Error().Err(err).Msg("Failed to parse wait duration")
-					continue
+				if w.Wait != nil {
+					duration, err := time.ParseDuration(*w.Wait)
+					if err != nil {
+						log.Error().Err(err).Msg("Failed to parse wait duration")
+						continue
+					}
+					log.Info().Str("job", job.Name).Str("duration", duration.String()).Msg("Waiting")
+					time.Sleep(duration)
 				}
-				log.Info().Str("job", job.Name).Str("duration", duration.String()).Msg("Waiting")
-				time.Sleep(duration)
 			}
 		}
 	}
