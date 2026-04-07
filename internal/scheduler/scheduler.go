@@ -80,16 +80,30 @@ func (s *Scheduler) runJob(job config.Job) func() {
 		s.wg.Add(1)
 		defer s.wg.Done()
 
-		log.Info().Str("job", job.Name).Msg("Connecting to server using RCON")
-		conn, err := rcon.Connect()
-		if err != nil {
-			log.Error().Str("job", job.Name).Err(err).Msg("Failed to connect to RCON")
+		log.Info().Str("job", job.Name).Msg("Starting")
+
+		var conn *rcon.Connection
+		for i := 0; i < 5; i++ {
+			connection, err := rcon.Connect()
+			if err != nil {
+				log.Warn().Err(err).Msg("Failed to connect to RCON server, retrying...")
+				time.Sleep(3 * time.Second)
+				continue
+			}
+			conn = connection
+			break
+		}
+
+		if conn == nil {
+			log.Error().Str("job", job.Name).Msg("Failed to connect to RCON server, aborting job")
 			return
 		}
+
 		defer func() {
-			log.Info().Str("job", job.Name).Msg("Scheduled job completed")
-			if err := conn.Close(); err != nil {
-				log.Error().Err(err).Str("job", job.Name).Msg("Failed to close RCON connection")
+			if conn != nil && conn.IsOpened() {
+				if err := conn.Close(); err != nil {
+					log.Error().Err(err).Str("job", job.Name).Msg("Failed to close RCON connection")
+				}
 			}
 		}()
 

@@ -37,3 +37,7 @@ func (c *Connection) Close() error {
 	log.Info().Msg("Closing RCON connection")
 	return err
 }
+
+func (c *Connection) IsOpened() bool {
+	return c.connection != nil
+}
