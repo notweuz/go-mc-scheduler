@@ -33,7 +33,8 @@ func NewApp(cfg *config.Config) App {
 		log.Fatal().Err(err).Msg("Failed to start database!")
 	}
 
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Recovery())
 	r.Use(cors.Default())
 	r.Use(middleware.Logger())
 
