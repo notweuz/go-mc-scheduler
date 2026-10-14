@@ -14,6 +14,6 @@ func Logger() gin.HandlerFunc {
 		c.Next()
 
 		latency := time.Since(start)
-		log.Info().Msgf("HTTP %s %s completed with status %d in %v", c.Request.Method, c.Request.URL.Path, c.Request.Response.StatusCode, latency)
+		log.Info().Msgf("HTTP %s %s completed with status %d in %v", c.Request.Method, c.Request.URL.Path, c.Writer.Status(), latency)
 	}
 }
