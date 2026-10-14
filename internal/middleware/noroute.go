@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NoRouteHandler() gin.HandlerFunc {
+func NoRoute() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_ = c.Error(errs.ErrNotFound)
 	}

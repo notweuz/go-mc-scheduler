@@ -35,6 +35,8 @@ func NewApp(cfg *config.Config) App {
 
 	r := gin.New()
 	r.Use(middleware.ErrorHandler())
+	r.Use(middleware.NoMethod())
+	r.Use(middleware.NoRoute())
 	r.Use(gin.Recovery())
 	r.Use(cors.Default())
 	r.Use(middleware.Logger())
