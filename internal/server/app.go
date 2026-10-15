@@ -45,7 +45,7 @@ func NewApp(cfg *config.Config) App {
 	r.NoMethod(middleware.NoMethod())
 
 	apiGroup := r.Group("/api")
-	MakeRoutes(apiGroup, nil) // TODO: It's not supposed to be nil, IT IS a placeholder for now
+	MakeRoutes(apiGroup) // TODO: It's not supposed to be nil, IT IS a placeholder for now
 
 	return &app{
 		DB:     db,
