@@ -1,4 +1,4 @@
-package server
+package database
 
 import (
 	"go-mc-scheduler/internal/config"
@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func SetupDatabase(cfg *config.Config) (*gorm.DB, error) {
+func Setup(cfg *config.Config) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(cfg.DatabaseDSN), &gorm.Config{
 		Logger:         logger.Default.LogMode(logger.Silent),
 		TranslateError: true,
@@ -19,7 +19,7 @@ func SetupDatabase(cfg *config.Config) (*gorm.DB, error) {
 	}
 	log.Info().Msg("Connected to database")
 
-	err = db.AutoMigrate() // add migration structures in future
+	err = Migrate(db)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to migrate database")
 		return nil, err

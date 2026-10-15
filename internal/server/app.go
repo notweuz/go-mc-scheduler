@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-mc-scheduler/internal/config"
 	"go-mc-scheduler/internal/middleware"
+	"go-mc-scheduler/internal/server/database"
 	"net/http"
 	"time"
 
@@ -28,7 +29,7 @@ type app struct {
 }
 
 func NewApp(cfg *config.Config) App {
-	db, err := SetupDatabase(cfg)
+	db, err := database.Setup(cfg)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to start database!")
 	}
