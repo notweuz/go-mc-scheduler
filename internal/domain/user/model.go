@@ -24,8 +24,8 @@ func (m *userModel) toDomain() *model.User {
 	}
 }
 
-func userFromDomain(u *model.User) userModel {
-	return userModel{
+func FromDomain(u *model.User) *userModel {
+	return &userModel{
 		ID:        u.ID,
 		Username:  u.Username,
 		Password:  u.Password,
