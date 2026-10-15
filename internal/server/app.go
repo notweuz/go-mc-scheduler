@@ -35,13 +35,14 @@ func NewApp(cfg *config.Config) App {
 	}
 
 	r := gin.New()
-	r.Use(middleware.ErrorHandler())
-	r.NoMethod(middleware.NoMethod())
-	r.NoRoute(middleware.NoRoute())
-	r.HandleMethodNotAllowed = true
-	r.Use(gin.Recovery())
-	r.Use(cors.Default())
 	r.Use(middleware.Logger())
+	r.Use(middleware.ErrorHandler())
+	r.Use(gin.CustomRecovery(middleware.Recovery()))
+	r.Use(cors.Default())
+
+	r.HandleMethodNotAllowed = true
+	r.NoRoute(middleware.NoRoute())
+	r.NoMethod(middleware.NoMethod())
 
 	return &app{
 		DB:     db,
