@@ -54,6 +54,10 @@ func (a *app) Start() {
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", a.Config.AppPort),
 		Handler: a.Gin.Handler(),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 	go func() {
 		log.Info().Msg("Starting application")
