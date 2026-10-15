@@ -66,7 +66,7 @@ func (a *app) Start() {
 	go func() {
 		log.Info().Msg("Starting application")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatal().Err(err).Msg("listen failed")
+			log.Error().Err(err).Msg("listen failed")
 		}
 	}()
 	a.Srv = srv
