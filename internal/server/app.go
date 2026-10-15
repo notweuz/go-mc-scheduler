@@ -44,6 +44,9 @@ func NewApp(cfg *config.Config) App {
 	r.NoRoute(middleware.NoRoute())
 	r.NoMethod(middleware.NoMethod())
 
+	apiGroup := r.Group("/api")
+	MakeRoutes(apiGroup, nil) // TODO: It's not supposed to be nil, IT IS a placeholder for now
+
 	return &app{
 		DB:     db,
 		Config: cfg,
@@ -53,8 +56,8 @@ func NewApp(cfg *config.Config) App {
 
 func (a *app) Start() {
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", a.Config.AppPort),
-		Handler: a.Gin.Handler(),
+		Addr:              fmt.Sprintf(":%d", a.Config.AppPort),
+		Handler:           a.Gin.Handler(),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      30 * time.Second,
