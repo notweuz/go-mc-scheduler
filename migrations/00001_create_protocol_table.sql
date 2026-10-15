@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TABLE protocol (
+CREATE TABLE protocols (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     default_port INTEGER,
@@ -7,4 +7,4 @@ CREATE TABLE protocol (
 );
 
 -- +goose Down
-DROP TABLE protocol;
+DROP TABLE protocols;
