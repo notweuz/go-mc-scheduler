@@ -9,6 +9,10 @@ type protocolModel struct {
 	Description *string
 }
 
+func (protocolModel) TableName() string {
+	return "protocols"
+}
+
 func (m *protocolModel) toDomain() *model.Protocol {
 	return &model.Protocol{
 		ID:          m.ID,

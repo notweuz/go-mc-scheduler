@@ -14,6 +14,10 @@ type userModel struct {
 	UpdatedAt time.Time `gorm:"not null"`
 }
 
+func (userModel) TableName() string {
+	return "users"
+}
+
 func (m *userModel) toDomain() *model.User {
 	return &model.User{
 		ID:        m.ID,
