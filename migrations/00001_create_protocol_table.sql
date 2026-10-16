@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE protocols (
-    id SERIAL PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     default_port INTEGER,
     description TEXT
