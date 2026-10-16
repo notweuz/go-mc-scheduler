@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"errors"
-	"go-mc-scheduler/internal/model/response"
 	"go-mc-scheduler/internal/errs"
+	"go-mc-scheduler/internal/model/response"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -17,23 +18,19 @@ func ErrorHandler() gin.HandlerFunc {
 			return
 		}
 
-		var appErr *errs.AppError
 		err := c.Errors.Last().Err
-		if !errors.As(err, &appErr) {
-			log.Error().
-				Err(err).
-				Str("method", c.Request.Method).
-				Str("path", c.FullPath()).
-				Msg("unhandled error")
-			appErr = errs.ErrInternalServer
-		} else if appErr.StatusCode >= 500 {
-			log.Error().
-				Err(appErr).
-				Str("code", appErr.Status).
-				Str("method", c.Request.Method).
-				Str("path", c.FullPath()).
-				Msg("internal app error")
-		}
+		var appErr *errs.AppError
+        if !errors.As(err, &appErr) {
+            appErr = errs.ErrInternalServer
+        }
+
+        if appErr.StatusCode >= http.StatusInternalServerError {
+            log.Error().
+                Err(err).
+                Str("method", c.Request.Method).
+                Str("path", c.Request.URL.Path).
+                Msg("request failed")
+        }
 
 		c.AbortWithStatusJSON(appErr.StatusCode, response.Response{
 			Success: false,
