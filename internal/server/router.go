@@ -6,12 +6,12 @@ import (
 )
 
 type RouterRegistrar interface {
-	Register(r *gin.RouterGroup)
+	RegisterRoutes(r *gin.RouterGroup)
 }
 
 func MakeRoutes(r *gin.RouterGroup, handlers ...RouterRegistrar) {
 	for _, handler := range handlers {
-		handler.Register(r)
+		handler.RegisterRoutes(r)
 	}
 	log.Info().Msg("handlers registered")
 }
