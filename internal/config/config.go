@@ -3,6 +3,7 @@ package config
 import (
 	"path/filepath"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
@@ -21,11 +22,11 @@ func NewConfig(path string) (*Config, error) {
 
 	v.SetDefault("LOG_LEVEL", "info")
 	v.SetDefault("APP_PORT", 8080)
-	v.SetDefault("DATABASE_DSN", "localhost")
+	v.SetDefault("DATABASE_DSN", "host=localhost user=postgres password=postgres dbname=go-rcon-panel port=5432 sslmode=disable")
 
 	err := v.ReadInConfig()
 	if err != nil {
-		return nil, err
+		log.Error().Err(err).Msg("couldn't read in config from file")
 	}
 
 	var cfg Config
