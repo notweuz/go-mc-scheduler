@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go-mc-scheduler/internal/config"
+	"go-mc-scheduler/internal/domain/auth"
 	"go-mc-scheduler/internal/middleware"
 	"go-mc-scheduler/internal/server/database"
 	"net/http"
@@ -44,8 +45,8 @@ func NewApp(cfg *config.Config) App {
 	r.NoRoute(middleware.NoRoute())
 	r.NoMethod(middleware.NoMethod())
 
-	apiGroup := r.Group("/api")
-	MakeRoutes(apiGroup) // TODO: It's not supposed to be nil, IT IS a placeholder for now
+	api := r.Group("/api")
+	MakeRoutes(api, auth.NewHandler())
 
 	return &app{
 		DB:     db,
