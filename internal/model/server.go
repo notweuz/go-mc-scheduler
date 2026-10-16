@@ -8,6 +8,7 @@ type Server struct {
 	Address     string `gorm:"not null"`
 	Password    string `gorm:"not null"`
 	ProtocolID  int64  `gorm:"not null"`
+	Protocol    *Protocol
 	Description *string
 
 	CreatedAt time.Time `gorm:"not null"`
