@@ -1,5 +1,7 @@
 package response
 
+import "go-mc-scheduler/internal/errs"
+
 type Response struct {
 	Success bool       `json:"success"`
 	Data    any        `json:"data,omitempty"`
@@ -10,7 +12,7 @@ type Response struct {
 type ErrorInfo struct {
 	Code    string            `json:"code"`
 	Message string            `json:"message"`
-	Fields  map[string]string `json:"fields,omitempty"`
+	Fields  map[string]errs.FieldError `json:"fields,omitempty"`
 }
 
 type Meta struct {

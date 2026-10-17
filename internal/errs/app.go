@@ -2,12 +2,17 @@ package errs
 
 import "net/http"
 
+type FieldError struct {
+	Code  string `json:"code"`
+	Param string `json:"param,omitempty"`
+}
+
 type AppError struct {
 	StatusCode int    `json:"-"`
 	Status     string `json:"status"`
 	Message    string `json:"message"`
 	Err        error
-	Fields     map[string]string `json:"fields,omitempty"`
+	Fields     map[string]FieldError `json:"fields,omitempty"`
 }
 
 func (e *AppError) Error() string {
@@ -31,7 +36,7 @@ func (e *AppError) WithErr(err error) *AppError {
 	return &cp
 }
 
-func (e *AppError) WithFields(f map[string]string) *AppError {
+func (e *AppError) WithFields(f map[string]FieldError) *AppError {
 	cp := *e
 	cp.Fields = f
 	return &cp
