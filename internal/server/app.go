@@ -7,6 +7,7 @@ import (
 	"go-mc-scheduler/internal/domain/auth"
 	"go-mc-scheduler/internal/middleware"
 	"go-mc-scheduler/internal/server/database"
+	"go-mc-scheduler/internal/validation"
 	"net/http"
 	"time"
 
@@ -34,6 +35,8 @@ func NewApp(cfg *config.Config) App {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to start database!")
 	}
+
+	validation.Register()
 
 	r := gin.New()
 	r.Use(middleware.Logger())
