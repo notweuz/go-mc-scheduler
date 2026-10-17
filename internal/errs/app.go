@@ -1,18 +1,16 @@
 package errs
 
-import "net/http"
-
 type FieldError struct {
 	Code  string `json:"code"`
 	Param string `json:"param,omitempty"`
 }
 
 type AppError struct {
-	StatusCode int    `json:"-"`
-	Status     string `json:"status"`
-	Message    string `json:"message"`
-	Err        error
-	Fields     map[string]FieldError `json:"fields,omitempty"`
+	Kind    Kind   `json:"-"`
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Err     error
+	Fields  map[string]FieldError `json:"fields,omitempty"`
 }
 
 func (e *AppError) Error() string {
@@ -42,14 +40,14 @@ func (e *AppError) WithFields(f map[string]FieldError) *AppError {
 	return &cp
 }
 
-func NewAppError(statusCode int, status, message string) *AppError {
-	return &AppError{StatusCode: statusCode, Status: status, Message: message}
+func New(kind Kind, status, message string) *AppError {
+	return &AppError{Kind: kind, Status: status, Message: message}
 }
 
 var (
-	ErrInternalServer   = NewAppError(http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "internal server error")
-	ErrNotFound         = NewAppError(http.StatusNotFound, "NOT_FOUND", "resource not found")
-	ErrUnauthorized     = NewAppError(http.StatusUnauthorized, "UNAUTHORIZED", "authentication required")
-	ErrBadRequest       = NewAppError(http.StatusBadRequest, "BAD_REQUEST", "invalid request")
-	ErrMethodNotAllowed = NewAppError(http.StatusMethodNotAllowed, "METHOD_NOT_ALLOWED", "method not allowed")
+	ErrInternalServer   = New(Internal, "INTERNAL_SERVER_ERROR", "internal server error")
+	ErrNotFound         = New(NotFound, "NOT_FOUND", "resource not found")
+	ErrUnauthorized     = New(Unauthenticated, "UNAUTHORIZED", "authentication required")
+	ErrBadRequest       = New(BadRequest, "BAD_REQUEST", "invalid request")
+	ErrMethodNotAllowed = New(MethodNotAllowed, "METHOD_NOT_ALLOWED", "method not allowed")
 )
