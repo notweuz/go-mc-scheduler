@@ -10,8 +10,8 @@ import (
 )
 
 type Service interface {
-	Register(ctx context.Context, req request.AuthCredentials) (string, error)
-	Login(ctx context.Context, req request.AuthCredentials) (string, error)
+	Register(ctx context.Context, req request.AuthCredentials) (*string, error)
+	Login(ctx context.Context, req request.AuthCredentials) (*string, error)
 }
 
 type Handler struct {

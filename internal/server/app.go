@@ -49,7 +49,9 @@ func NewApp(cfg *config.Config) App {
 	r.NoMethod(middleware.NoMethod())
 
 	api := r.Group("/api")
-	MakeRoutes(api, auth.NewHandler())
+
+	authSVC := auth.NewService()
+	MakeRoutes(api, auth.NewHandler(authSVC))
 
 	return &app{
 		DB:     db,
