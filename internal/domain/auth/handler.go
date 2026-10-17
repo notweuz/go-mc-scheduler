@@ -2,11 +2,15 @@ package auth
 
 import (
 	"go-mc-scheduler/internal/dto/request"
-	"go-mc-scheduler/internal/errs"
 	"go-mc-scheduler/internal/transport/http/respond"
+	"go-mc-scheduler/internal/validation"
 
 	"github.com/gin-gonic/gin"
 )
+
+type Service interface {
+	Register()
+}
 
 type Handler struct {
 	// svc in future
@@ -19,7 +23,7 @@ func NewHandler() *Handler {
 func (h *Handler) Login(c *gin.Context) {
 	var req request.AuthCredentials
 	if err := c.ShouldBindJSON(&req); err != nil {
-		respond.Error(c, errs.ErrBadRequest.WithErr(err))
+		respond.Error(c, validation.FromBindError(err))
 		return
 	}
 }
@@ -27,7 +31,7 @@ func (h *Handler) Login(c *gin.Context) {
 func (h *Handler) Register(c *gin.Context) {
 	var req request.AuthCredentials
 	if err := c.ShouldBindJSON(&req); err != nil {
-		respond.Error(c, err)
+		respond.Error(c, validation.FromBindError(err))
 		return
 	}
 }
