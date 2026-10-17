@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"go-mc-scheduler/internal/dto/request"
 	"go-mc-scheduler/internal/transport/http/respond"
 	"go-mc-scheduler/internal/validation"
@@ -9,15 +10,16 @@ import (
 )
 
 type Service interface {
-	Register()
+	Register(ctx context.Context, req request.AuthCredentials) (string, error)
+	Login(ctx context.Context, req request.AuthCredentials) (string, error)
 }
 
 type Handler struct {
-	// svc in future
+	service Service
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler(svc Service) *Handler {
+	return &Handler{service: svc}
 }
 
 func (h *Handler) Login(c *gin.Context) {
