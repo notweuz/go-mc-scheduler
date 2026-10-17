@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"go-mc-scheduler/internal/dto/request"
+	"go-mc-scheduler/internal/dto/response"
 	"go-mc-scheduler/internal/errs"
-	"go-mc-scheduler/internal/model/request"
-	"go-mc-scheduler/internal/model/response"
 
 	"github.com/gin-gonic/gin"
 )

@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"errors"
+	"go-mc-scheduler/internal/dto/response"
 	"go-mc-scheduler/internal/errs"
-	"go-mc-scheduler/internal/model/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
