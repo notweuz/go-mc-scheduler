@@ -2,8 +2,8 @@ package auth
 
 import (
 	"go-mc-scheduler/internal/dto/request"
-	"go-mc-scheduler/internal/dto/response"
 	"go-mc-scheduler/internal/errs"
+	"go-mc-scheduler/internal/transport/http/respond"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,7 @@ func NewHandler() *Handler {
 func (h *Handler) Login(c *gin.Context) {
 	var req request.AuthCredentials
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Fail(c, errs.ErrBadRequest, nil)
+		respond.Error(c, errs.ErrBadRequest.WithErr(err))
 		return
 	}
 }
@@ -27,7 +27,7 @@ func (h *Handler) Login(c *gin.Context) {
 func (h *Handler) Register(c *gin.Context) {
 	var req request.AuthCredentials
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Fail(c, errs.ErrBadRequest, nil)
+		respond.Error(c, err)
 		return
 	}
 }
