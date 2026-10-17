@@ -13,8 +13,8 @@ type ErrorInfo struct {
 }
 
 type Meta struct {
-	Page       int `json:"page,omitempty"`
-	PerPage    int `json:"per_page,omitempty"`
-	Total      int `json:"total,omitempty"`
-	TotalPages int `json:"total_pages,omitempty"`
+	Page       int `json:"page"`
+	PerPage    int `json:"per_page"`
+	Total      int `json:"total"`
+	TotalPages int `json:"total_pages"`
 }
