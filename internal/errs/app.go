@@ -7,6 +7,7 @@ type AppError struct {
 	Status     string `json:"status"`
 	Message    string `json:"message"`
 	Err        error
+	Fields     map[string]string `json:"fields,omitempty"`
 }
 
 func (e *AppError) Error() string {
@@ -27,6 +28,12 @@ func (e *AppError) WithMessage(msg string) *AppError {
 func (e *AppError) WithErr(err error) *AppError {
 	cp := *e
 	cp.Err = err
+	return &cp
+}
+
+func (e *AppError) WithFields(f map[string]string) *AppError {
+	cp := *e
+	cp.Fields = f
 	return &cp
 }
 

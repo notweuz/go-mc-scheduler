@@ -37,6 +37,7 @@ func ErrorHandler() gin.HandlerFunc {
 			Error: &response.ErrorInfo{
 				Code: appErr.Status,
 				Message: appErr.Message,
+				Fields: appErr.Fields,
 			},
 		})
 	}
