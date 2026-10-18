@@ -13,10 +13,10 @@ func NewService() Service {
 	return &service{}
 }
  
-func (s *service) Register(ctx context.Context, req request.AuthCredentials) (*string, error) {
-	return nil, nil
+func (s *service) Register(ctx context.Context, req request.AuthCredentials) (string, error) {
+	return "", nil
 }
 
-func (s *service) Login(ctx context.Context, req request.AuthCredentials) (*string, error) {
-	return nil, nil
+func (s *service) Login(ctx context.Context, req request.AuthCredentials) (string, error) {
+	return "", nil
 }
