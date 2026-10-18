@@ -1,52 +1,66 @@
 package auth
 
 import (
+	"errors"
 	"go-mc-scheduler/internal/errs"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/rs/zerolog/log"
 )
 
 var (
-	ErrJWTExpired = errs.ErrUnauthorized.WithMessage("JWT expired")
-	ErrJWTSignatureFailed = errs.ErrBadRequest.WithMessage("JWT signature is invalid")
+	ErrJWTExpired         = errs.ErrUnauthorized.WithMessage("JWT expired")
+	ErrJWTSignatureFailed = errs.ErrUnauthorized.WithMessage("JWT signature is invalid")
 )
 
 type Claims struct {
-	UserID int64 `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
 func GenerateToken(userID int64, secret string) (string, error) {
+	now := time.Now()
+
 	claims := Claims{
-		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * 24 * time.Hour)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Subject:   strconv.FormatInt(userID, 10),
+			ExpiresAt: jwt.NewNumericDate(now.Add(30 * 24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(now),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(secret)
+	return token.SignedString([]byte(secret))
 }
 
 func ParseToken(tokenString, secret string) (int64, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (any, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			log.Error().Interface("method", token.Header["alg"]).Msg("unexpected signing method")
-			return nil, ErrJWTSignatureFailed
-		}
-		return []byte(secret), nil
-	})
+	token, err := jwt.ParseWithClaims(
+		tokenString,
+		&Claims{},
+		func(token *jwt.Token) (any, error) {
+			return []byte(secret), nil
+		},
+		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
+		jwt.WithExpirationRequired(),
+	)
+
 	if err != nil {
-		return 0, err
+		switch {
+		case errors.Is(err, jwt.ErrTokenExpired):
+			return 0, ErrJWTExpired
+		case errors.Is(err, jwt.ErrTokenSignatureInvalid):
+			return 0, ErrJWTSignatureFailed
+		default:
+			return 0, errs.ErrUnauthorized
+		}
 	}
 
-	claims, ok := token.Claims.(*Claims)
-	if !ok || !token.Valid {
-		return 0, ErrJWTExpired
+	claims := token.Claims.(*Claims)
+
+	userID, err := strconv.ParseInt(claims.Subject, 10, 64)
+	if err != nil || userID <= 0 {
+		return 0, errs.ErrUnauthorized
 	}
 
-	return claims.UserID, nil
+	return userID, nil
 }
