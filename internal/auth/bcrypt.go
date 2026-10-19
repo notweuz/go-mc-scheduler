@@ -1,10 +1,20 @@
 package auth
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"errors"
+	"go-rcon-panel/internal/errs"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
+var ErrPasswordTooLong = errs.ErrBadRequest.WithMessage("password is too long")
 
 func GeneratePasswordHash(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		if errors.Is(err, bcrypt.ErrPasswordTooLong) {
+			return "", ErrPasswordTooLong.WithErr(err)
+		}
 		return "", err
 	}
 	return string(hash), nil

@@ -47,11 +47,11 @@ func ParseToken(tokenString, secret string) (int64, error) {
 	if err != nil {
 		switch {
 		case errors.Is(err, jwt.ErrTokenExpired):
-			return 0, ErrJWTExpired
+			return 0, ErrJWTExpired.WithErr(err)
 		case errors.Is(err, jwt.ErrTokenSignatureInvalid):
-			return 0, ErrJWTSignatureFailed
+			return 0, ErrJWTSignatureFailed.WithErr(err)
 		default:
-			return 0, errs.ErrUnauthorized
+			return 0, errs.ErrUnauthorized.WithErr(err)
 		}
 	}
 
