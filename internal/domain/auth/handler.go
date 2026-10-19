@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"go-rcon-panel/internal/dto/request"
+	"go-rcon-panel/internal/dto/response"
 	"go-rcon-panel/internal/transport/http/respond"
 	"go-rcon-panel/internal/validation"
 
@@ -28,6 +29,12 @@ func (h *Handler) Login(c *gin.Context) {
 		respond.Error(c, validation.FromBindError(err))
 		return
 	}
+
+	token, err := h.service.Register(c.Request.Context(), req)
+	if err != nil {
+		respond.Error(c, err)
+	}
+	respond.OK(c, response.AuthResponse{Token: token})
 }
 
 func (h *Handler) Register(c *gin.Context) {
@@ -36,6 +43,12 @@ func (h *Handler) Register(c *gin.Context) {
 		respond.Error(c, validation.FromBindError(err))
 		return
 	}
+
+	token, err := h.service.Register(c.Request.Context(), req)
+	if err != nil {
+		respond.Error(c, err)
+	}
+	respond.Created(c, response.AuthResponse{Token: token})
 }
 
 func (h *Handler) RegisterRoutes(r *gin.RouterGroup) {
