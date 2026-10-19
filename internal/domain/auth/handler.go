@@ -33,6 +33,7 @@ func (h *Handler) Login(c *gin.Context) {
 	token, err := h.service.Register(c.Request.Context(), req)
 	if err != nil {
 		respond.Error(c, err)
+		return
 	}
 	respond.OK(c, response.AuthResponse{Token: token})
 }
@@ -47,6 +48,7 @@ func (h *Handler) Register(c *gin.Context) {
 	token, err := h.service.Register(c.Request.Context(), req)
 	if err != nil {
 		respond.Error(c, err)
+		return
 	}
 	respond.Created(c, response.AuthResponse{Token: token})
 }
