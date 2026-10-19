@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	DatabaseDSN string `mapstructure:"DATABASE_DSN"`
+	JWTSecret   string `mapstructure:"JWT_SECRET"`
 	LogLevel    string `mapstructure:"LOG_LEVEL"`
 	AppPort     int    `mapstructure:"APP_PORT"`
 }
@@ -22,6 +23,7 @@ func NewConfig(path string) (*Config, error) {
 
 	v.SetDefault("LOG_LEVEL", "info")
 	v.SetDefault("APP_PORT", 8080)
+	v.SetDefault("JWT_SECRET", "secret")
 	v.SetDefault("DATABASE_DSN", "host=localhost user=postgres password=postgres dbname=go-rcon-panel port=5432 sslmode=disable")
 
 	err := v.ReadInConfig()
