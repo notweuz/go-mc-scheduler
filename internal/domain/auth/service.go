@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go-rcon-panel/internal/auth"
 	authUtil "go-rcon-panel/internal/auth"
@@ -19,6 +20,8 @@ type service struct {
 	userSVC user.Service
 	cfg     *config.Config
 }
+
+var dummyHash, _ = authUtil.GeneratePasswordHash("dummy")
 
 func NewService(userSVC user.Service, cfg *config.Config) Service {
 	return &service{userSVC: userSVC, cfg: cfg}
@@ -43,6 +46,10 @@ func (s *service) Register(ctx context.Context, req request.AuthCredentials) (st
 func (s *service) Login(ctx context.Context, req request.AuthCredentials) (string, error) {
 	u, err := s.userSVC.GetByUsername(ctx, strings.ToLower(req.Username))
 	if err != nil {
+		if errors.Is(err, user.ErrNotFound) {
+			authUtil.VerifyPasswordHash(dummyHash, req.Password)
+			return "", errInvalidCredentials.WithErr(err)
+		}
 		return "", fmt.Errorf("login: %w", err)
 	}
 
