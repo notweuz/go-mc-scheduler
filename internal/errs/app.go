@@ -6,10 +6,10 @@ type FieldError struct {
 }
 
 type AppError struct {
-	Kind    Kind   `json:"-"`
-	Status  string `json:"status"`
-	Message string `json:"message"`
-	Err     error
+	Kind    Kind                  `json:"-"`
+	Status  string                `json:"status"`
+	Message string                `json:"message"`
+	Err     error                 `json:"-"`
 	Fields  map[string]FieldError `json:"fields,omitempty"`
 }
 
@@ -18,6 +18,15 @@ func (e *AppError) Error() string {
 		return e.Message + ": " + e.Err.Error()
 	}
 	return e.Message
+}
+
+func (e *AppError) Is(target error) bool {
+	t, ok := target.(*AppError)
+	if !ok {
+		return false
+	}
+
+	return e.Kind == t.Kind && e.Status == t.Status
 }
 
 func (e *AppError) Unwrap() error { return e.Err }
@@ -50,4 +59,5 @@ var (
 	ErrUnauthorized     = New(Unauthenticated, "UNAUTHORIZED", "authentication required")
 	ErrBadRequest       = New(BadRequest, "BAD_REQUEST", "invalid request")
 	ErrMethodNotAllowed = New(MethodNotAllowed, "METHOD_NOT_ALLOWED", "method not allowed")
+	ErrConflict         = New(Conflict, "CONFLICT", "resource conflict")
 )
