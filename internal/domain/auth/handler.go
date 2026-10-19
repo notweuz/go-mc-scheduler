@@ -30,7 +30,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.service.Register(c.Request.Context(), req)
+	token, err := h.service.Login(c.Request.Context(), req)
 	if err != nil {
 		respond.Error(c, err)
 		return
