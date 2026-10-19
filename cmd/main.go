@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-mc-scheduler/internal/config"
-	"go-mc-scheduler/internal/logger"
-	"go-mc-scheduler/internal/server"
+	"go-rcon-panel/internal/config"
+	"go-rcon-panel/internal/logger"
+	"go-rcon-panel/internal/server"
 	"os"
 	"os/signal"
 	"syscall"

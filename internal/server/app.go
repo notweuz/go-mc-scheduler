@@ -3,11 +3,11 @@ package server
 import (
 	"context"
 	"fmt"
-	"go-mc-scheduler/internal/config"
-	"go-mc-scheduler/internal/domain/auth"
-	"go-mc-scheduler/internal/middleware"
-	"go-mc-scheduler/internal/server/database"
-	"go-mc-scheduler/internal/validation"
+	"go-rcon-panel/internal/config"
+	"go-rcon-panel/internal/domain/auth"
+	"go-rcon-panel/internal/middleware"
+	"go-rcon-panel/internal/server/database"
+	"go-rcon-panel/internal/validation"
 	"net/http"
 	"time"
 

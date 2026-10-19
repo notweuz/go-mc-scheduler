@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-mc-scheduler/internal/errs"
+	"go-rcon-panel/internal/errs"
 
 	"github.com/gin-gonic/gin"
 )

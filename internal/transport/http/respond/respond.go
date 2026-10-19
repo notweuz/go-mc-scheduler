@@ -1,7 +1,7 @@
 package respond
 
 import (
-	"go-mc-scheduler/internal/dto/response"
+	"go-rcon-panel/internal/dto/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

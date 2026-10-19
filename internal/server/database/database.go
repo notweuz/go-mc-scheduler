@@ -1,7 +1,7 @@
 package database
 
 import (
-	"go-mc-scheduler/internal/config"
+	"go-rcon-panel/internal/config"
 
 	"github.com/rs/zerolog/log"
 	"gorm.io/driver/postgres"

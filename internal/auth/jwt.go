@@ -2,7 +2,7 @@ package auth
 
 import (
 	"errors"
-	"go-mc-scheduler/internal/errs"
+	"go-rcon-panel/internal/errs"
 	"strconv"
 	"time"
 

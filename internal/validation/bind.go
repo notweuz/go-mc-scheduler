@@ -3,7 +3,7 @@ package validation
 import (
 	"encoding/json"
 	"errors"
-	"go-mc-scheduler/internal/errs"
+	"go-rcon-panel/internal/errs"
 	"io"
 
 	"github.com/go-playground/validator/v10"

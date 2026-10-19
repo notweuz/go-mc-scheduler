@@ -2,9 +2,9 @@ package auth
 
 import (
 	"context"
-	"go-mc-scheduler/internal/dto/request"
-	"go-mc-scheduler/internal/transport/http/respond"
-	"go-mc-scheduler/internal/validation"
+	"go-rcon-panel/internal/dto/request"
+	"go-rcon-panel/internal/transport/http/respond"
+	"go-rcon-panel/internal/validation"
 
 	"github.com/gin-gonic/gin"
 )
