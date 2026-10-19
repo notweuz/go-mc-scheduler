@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-rcon-panel/internal/config"
 	"go-rcon-panel/internal/domain/auth"
+	"go-rcon-panel/internal/domain/user"
 	"go-rcon-panel/internal/middleware"
 	"go-rcon-panel/internal/server/database"
 	"go-rcon-panel/internal/validation"
@@ -51,7 +52,9 @@ func NewApp(cfg *config.Config) (App, error) {
 
 	api := r.Group("/api")
 
-	authSVC := auth.NewService()
+	userRepo := user.NewRepository(db)
+	userSVC := user.NewService(userRepo)
+	authSVC := auth.NewService(userSVC, cfg)
 	MakeRoutes(api, auth.NewHandler(authSVC))
 
 	srv := &http.Server{

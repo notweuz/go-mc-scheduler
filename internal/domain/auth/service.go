@@ -2,20 +2,57 @@ package auth
 
 import (
 	"context"
+	"fmt"
+	"go-rcon-panel/internal/auth"
+	authUtil "go-rcon-panel/internal/auth"
+	"go-rcon-panel/internal/config"
+	"go-rcon-panel/internal/domain/user"
 	"go-rcon-panel/internal/dto/request"
+	"go-rcon-panel/internal/errs"
+	"go-rcon-panel/internal/model"
+	"strings"
 )
 
+var errInvalidCredentials = errs.ErrUnauthorized.WithMessage("invalid credentials")
+
 type service struct {
+	userSVC user.Service
+	cfg     *config.Config
 }
 
-func NewService() Service {
-	return &service{}
+func NewService(userSVC user.Service, cfg *config.Config) Service {
+	return &service{userSVC: userSVC, cfg: cfg}
 }
 
 func (s *service) Register(ctx context.Context, req request.AuthCredentials) (string, error) {
-	return "", nil
+	encryptedPassword, err := authUtil.GeneratePasswordHash(req.Password)
+	if err != nil {
+		return "", fmt.Errorf("register: hash password: %w", err)
+	}
+	u := &model.User{Username: strings.ToLower(req.Username), Password: encryptedPassword}
+	if err := s.userSVC.Create(ctx, u); err != nil {
+		return "", fmt.Errorf("register: %w", err)
+	}
+	token, err := authUtil.GenerateToken(u.ID, s.cfg.JWTSecret)
+	if err != nil {
+		return "", fmt.Errorf("register: generate token: %w", err)
+	}
+	return token, nil
 }
 
 func (s *service) Login(ctx context.Context, req request.AuthCredentials) (string, error) {
-	return "", nil
+	u, err := s.userSVC.GetByUsername(ctx, strings.ToLower(req.Username))
+	if err != nil {
+		return "", fmt.Errorf("login: %w", err)
+	}
+
+	if !authUtil.VerifyPasswordHash(u.Password, req.Password) {
+		return "", errInvalidCredentials
+	}
+
+	token, err := auth.GenerateToken(u.ID, s.cfg.JWTSecret)
+	if err != nil {
+		return "", fmt.Errorf("login: generate token: %w", err)
+	}
+	return token, nil
 }
