@@ -21,7 +21,10 @@ func main() {
 	}
 	logger.UpdateLogLevel(cfg.LogLevel)
 
-	app := server.NewApp(cfg)
+	app, err := server.NewApp(cfg)
+	if err != nil {
+		log.Panic().Err(err).Msg("Error loading config")
+	}
 	app.Start()
 
 	log.Debug().Msg("Initialized graceful shutdown")

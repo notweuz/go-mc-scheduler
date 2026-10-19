@@ -30,10 +30,11 @@ type app struct {
 	Srv    *http.Server
 }
 
-func NewApp(cfg *config.Config) App {
+func NewApp(cfg *config.Config) (App, error) {
 	db, err := database.Setup(cfg)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to start database!")
+		log.Error().Err(err).Msg("Failed to start database!")
+		return nil, err
 	}
 
 	validation.Register()
@@ -53,37 +54,40 @@ func NewApp(cfg *config.Config) App {
 	authSVC := auth.NewService()
 	MakeRoutes(api, auth.NewHandler(authSVC))
 
-	return &app{
-		DB:     db,
-		Config: cfg,
-		Gin:    r,
-	}
-}
-
-func (a *app) Start() {
 	srv := &http.Server{
-		Addr:              fmt.Sprintf(":%d", a.Config.AppPort),
-		Handler:           a.Gin.Handler(),
+		Addr:              fmt.Sprintf(":%d", cfg.AppPort),
+		Handler:           r.Handler(),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      30 * time.Second,
 		IdleTimeout:       60 * time.Second,
 	}
+
+	return &app{
+		DB:     db,
+		Config: cfg,
+		Gin:    r,
+		Srv:    srv,
+	}, nil
+}
+
+func (a *app) Start() {
 	go func() {
 		log.Info().Msg("Starting application")
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := a.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Error().Err(err).Msg("listen failed")
 		}
 	}()
-	a.Srv = srv
 }
 
 func (a *app) Shutdown() {
 	log.Info().Msg("Shutting down application")
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
 	if err := a.Srv.Shutdown(ctx); err != nil {
-		log.Panic().Err(err).Msg("Error shutting down")
+		log.Error().Err(err).Msg("Error shutting down")
+		return
 	}
 	log.Info().Msg("Server gracefully stopped")
 }
