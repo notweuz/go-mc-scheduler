@@ -13,11 +13,8 @@ func FromBindError(err error) *errs.AppError {
 	var ve validator.ValidationErrors
 	if errors.As(err, &ve) {
 		fields := make(map[string]errs.FieldError, len(ve))
-		for _, ve := range ve {
-			fields[ve.Field()] = errs.FieldError{
-				Code:  ve.Tag(),
-				Param: ve.Param(),
-			}
+		for _, fe := range ve {
+			fields[fe.Field()] = errs.FieldError{Code: fe.Tag(), Param: fe.Param()}
 		}
 		return errs.ErrBadRequest.
 			WithMessage("validation failed").

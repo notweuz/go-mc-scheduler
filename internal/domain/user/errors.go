@@ -1,8 +1,8 @@
 package user
 
-import "go-rcon-panel/internal/errs"
+import "errors"
 
 var (
-	ErrUserNotFound = errs.ErrNotFound.WithMessage("user not found")
-	ErrSameUserExist = errs.ErrConflict.WithMessage("user with same username already exist")
+	ErrNotFound      = errors.New("user not found")
+	ErrAlreadyExists = errors.New("user already exists")
 )

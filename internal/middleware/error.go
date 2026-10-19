@@ -11,12 +11,20 @@ import (
 )
 
 var statusByKind = map[errs.Kind]int{
-	errs.Internal:        http.StatusInternalServerError,
-	errs.InvalidInput:    http.StatusBadRequest,
-	errs.Unauthenticated: http.StatusUnauthorized,
-	errs.Forbidden:       http.StatusForbidden,
-	errs.NotFound:        http.StatusNotFound,
-	errs.Conflict:        http.StatusConflict,
+	errs.BadRequest:       http.StatusBadRequest,
+	errs.Unauthenticated:  http.StatusUnauthorized,
+	errs.Forbidden:        http.StatusForbidden,
+	errs.NotFound:         http.StatusNotFound,
+	errs.MethodNotAllowed: http.StatusMethodNotAllowed,
+	errs.Conflict:         http.StatusConflict,
+	errs.Internal:         http.StatusInternalServerError,
+}
+
+func httpStatus(k errs.Kind) int {
+	if s, ok := statusByKind[k]; ok {
+		return s
+	}
+	return http.StatusInternalServerError
 }
 
 func ErrorHandler() gin.HandlerFunc {
@@ -33,25 +41,27 @@ func ErrorHandler() gin.HandlerFunc {
 			appErr = errs.ErrInternalServer
 		}
 
-		statusCode, ok := statusByKind[appErr.Kind]
-		if !ok {
-			statusCode = http.StatusInternalServerError
-		}
+		status := httpStatus(appErr.Kind)
+		code, message, fields := appErr.Code, appErr.Message, appErr.Fields
 
-		if statusCode >= http.StatusInternalServerError {
+		if status >= http.StatusInternalServerError {
 			log.Error().
 				Err(err).
 				Str("method", c.Request.Method).
 				Str("path", c.Request.URL.Path).
 				Msg("request failed")
+
+			code = errs.ErrInternalServer.Code
+			message = errs.ErrInternalServer.Message
+			fields = nil
 		}
 
-		c.AbortWithStatusJSON(statusCode, response.Response{
+		c.AbortWithStatusJSON(status, response.Response{
 			Success: false,
 			Error: &response.ErrorInfo{
-				Code:    appErr.Status,
-				Message: appErr.Message,
-				Fields:  appErr.Fields,
+				Code:    code,
+				Message: message,
+				Fields:  fields,
 			},
 		})
 	}

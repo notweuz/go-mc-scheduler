@@ -6,11 +6,11 @@ type FieldError struct {
 }
 
 type AppError struct {
-	Kind    Kind                  `json:"-"`
-	Status  string                `json:"status"`
-	Message string                `json:"message"`
-	Err     error                 `json:"-"`
-	Fields  map[string]FieldError `json:"fields,omitempty"`
+	Kind    Kind
+	Code    string
+	Message string
+	Err     error
+	Fields  map[string]FieldError
 }
 
 func (e *AppError) Error() string {
@@ -25,8 +25,7 @@ func (e *AppError) Is(target error) bool {
 	if !ok {
 		return false
 	}
-
-	return e.Kind == t.Kind && e.Status == t.Status
+	return e.Kind == t.Kind && e.Code == t.Code
 }
 
 func (e *AppError) Unwrap() error { return e.Err }
@@ -49,14 +48,15 @@ func (e *AppError) WithFields(f map[string]FieldError) *AppError {
 	return &cp
 }
 
-func New(kind Kind, status, message string) *AppError {
-	return &AppError{Kind: kind, Status: status, Message: message}
+func New(kind Kind, code, message string) *AppError {
+	return &AppError{Kind: kind, Code: code, Message: message}
 }
 
 var (
 	ErrInternalServer   = New(Internal, "INTERNAL_SERVER_ERROR", "internal server error")
 	ErrNotFound         = New(NotFound, "NOT_FOUND", "resource not found")
 	ErrUnauthorized     = New(Unauthenticated, "UNAUTHORIZED", "authentication required")
+	ErrForbidden        = New(Forbidden, "FORBIDDEN", "access denied")
 	ErrBadRequest       = New(BadRequest, "BAD_REQUEST", "invalid request")
 	ErrMethodNotAllowed = New(MethodNotAllowed, "METHOD_NOT_ALLOWED", "method not allowed")
 	ErrConflict         = New(Conflict, "CONFLICT", "resource conflict")
