@@ -55,7 +55,7 @@ func NewApp(cfg *config.Config) (App, error) {
 	userRepo := user.NewRepository(db)
 	userSVC := user.NewService(userRepo)
 	authSVC := auth.NewService(userSVC, cfg)
-	MakeRoutes(api, auth.NewHandler(authSVC), user.NewHandler(userSVC))
+	MakeRoutes(api, auth.NewHandler(authSVC), user.NewHandler(userSVC, cfg))
 
 	srv := &http.Server{
 		Addr:              fmt.Sprintf(":%d", cfg.AppPort),

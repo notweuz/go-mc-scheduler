@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"go-rcon-panel/internal/config"
 	"go-rcon-panel/internal/middleware"
 	"go-rcon-panel/internal/model"
 	"go-rcon-panel/internal/transport/http/respond"
@@ -17,11 +18,13 @@ type Service interface {
 
 type Handler struct {
 	service Service
+	cfg *config.Config
 }
 
-func NewHandler(service Service) *Handler {
+func NewHandler(service Service, cfg *config.Config) *Handler {
 	return &Handler{
 		service: service,
+		cfg: cfg,
 	}
 }
 
@@ -40,6 +43,6 @@ func (h *Handler) GetMe(c *gin.Context) {
 }
 
 func (h *Handler) RegisterRoutes(r *gin.RouterGroup) {
-	auth := r.Group("/users")
+	auth := r.Group("/users", middleware.Auth(h.cfg))
 	auth.POST("/@me", h.GetMe)
 }
