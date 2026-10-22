@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	"go-rcon-panel/internal/errs"
+	"rcon-scheduler-panel/internal/errs"
 	"runtime/debug"
 
 	"github.com/gin-gonic/gin"

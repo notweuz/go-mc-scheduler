@@ -2,7 +2,7 @@ package auth
 
 import (
 	"errors"
-	"go-rcon-panel/internal/errs"
+	"rcon-scheduler-panel/internal/errs"
 	"strconv"
 	"time"
 

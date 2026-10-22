@@ -1,4 +1,4 @@
-module go-rcon-panel
+module rcon-scheduler-panel
 
 go 1.26.0
 

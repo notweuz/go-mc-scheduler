@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-rcon-panel/internal/errs"
-	"go-rcon-panel/internal/model"
+	"rcon-scheduler-panel/internal/errs"
+	"rcon-scheduler-panel/internal/model"
 )
 
 type Repository interface {

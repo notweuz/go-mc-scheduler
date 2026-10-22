@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"errors"
-	"go-rcon-panel/internal/dto/response"
-	"go-rcon-panel/internal/errs"
 	"net/http"
+	"rcon-scheduler-panel/internal/dto/response"
+	"rcon-scheduler-panel/internal/errs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"

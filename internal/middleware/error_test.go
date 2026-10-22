@@ -3,9 +3,9 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"go-rcon-panel/internal/errs"
 	"net/http"
 	"net/http/httptest"
+	"rcon-scheduler-panel/internal/errs"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +30,7 @@ func TestErrorHandlerStatus(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			r := gin.New()
 			r.Use(ErrorHandler())
-			r.GET("/", func(c *gin.Context) {_ = c.Error(tt.err)})
+			r.GET("/", func(c *gin.Context) { _ = c.Error(tt.err) })
 
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/", nil))

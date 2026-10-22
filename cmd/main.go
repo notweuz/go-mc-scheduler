@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"go-rcon-panel/internal/config"
-	"go-rcon-panel/internal/logger"
-	"go-rcon-panel/internal/server"
 	"os"
 	"os/signal"
+	"rcon-scheduler-panel/internal/config"
+	"rcon-scheduler-panel/internal/logger"
+	"rcon-scheduler-panel/internal/server"
 	"syscall"
 
 	"github.com/rs/zerolog/log"

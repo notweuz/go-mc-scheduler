@@ -1,6 +1,6 @@
 package response
 
-import "go-rcon-panel/internal/errs"
+import "rcon-scheduler-panel/internal/errs"
 
 type Response struct {
 	Success bool       `json:"success"`

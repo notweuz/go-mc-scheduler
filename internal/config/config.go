@@ -24,7 +24,7 @@ func NewConfig(path string) (*Config, error) {
 	v.SetDefault("LOG_LEVEL", "info")
 	v.SetDefault("APP_PORT", 8080)
 	v.SetDefault("JWT_SECRET", "secret")
-	v.SetDefault("DATABASE_DSN", "host=localhost user=postgres password=postgres dbname=go-rcon-panel port=5432 sslmode=disable")
+	v.SetDefault("DATABASE_DSN", "host=localhost user=postgres password=postgres dbname=rcon-scheduler-panel port=5432 sslmode=disable")
 
 	err := v.ReadInConfig()
 	if err != nil {

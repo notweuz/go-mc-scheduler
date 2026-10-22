@@ -1,7 +1,7 @@
 package database
 
 import (
-	"go-rcon-panel/migrations"
+	"rcon-scheduler-panel/migrations"
 
 	"github.com/pressly/goose/v3"
 	"gorm.io/gorm"

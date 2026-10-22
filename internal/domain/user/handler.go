@@ -2,10 +2,10 @@ package user
 
 import (
 	"context"
-	"go-rcon-panel/internal/config"
-	"go-rcon-panel/internal/middleware"
-	"go-rcon-panel/internal/model"
-	"go-rcon-panel/internal/transport/http/respond"
+	"rcon-scheduler-panel/internal/config"
+	"rcon-scheduler-panel/internal/middleware"
+	"rcon-scheduler-panel/internal/model"
+	"rcon-scheduler-panel/internal/transport/http/respond"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,13 +18,13 @@ type Service interface {
 
 type Handler struct {
 	service Service
-	cfg *config.Config
+	cfg     *config.Config
 }
 
 func NewHandler(service Service, cfg *config.Config) *Handler {
 	return &Handler{
 		service: service,
-		cfg: cfg,
+		cfg:     cfg,
 	}
 }
 

@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"fmt"
-	"go-rcon-panel/internal/auth"
-	"go-rcon-panel/internal/config"
-	"go-rcon-panel/internal/dto/header"
-	"go-rcon-panel/internal/errs"
+	"rcon-scheduler-panel/internal/auth"
+	"rcon-scheduler-panel/internal/config"
+	"rcon-scheduler-panel/internal/dto/header"
+	"rcon-scheduler-panel/internal/errs"
 	"strings"
 
 	"github.com/gin-gonic/gin"

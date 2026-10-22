@@ -2,10 +2,10 @@ package auth
 
 import (
 	"context"
-	"go-rcon-panel/internal/dto/request"
-	"go-rcon-panel/internal/dto/response"
-	"go-rcon-panel/internal/transport/http/respond"
-	"go-rcon-panel/internal/validation"
+	"rcon-scheduler-panel/internal/dto/request"
+	"rcon-scheduler-panel/internal/dto/response"
+	"rcon-scheduler-panel/internal/transport/http/respond"
+	"rcon-scheduler-panel/internal/validation"
 
 	"github.com/gin-gonic/gin"
 )
